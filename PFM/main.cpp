@@ -10,12 +10,12 @@ ILOSTLBEGIN
 
 #define CPLEX_TIME_LIM 3600
 
-int N; // Qtde de vertices
-int M; // Qtde de arestas
-int S; // Origem
-int T_dest; // Destino
-vector<vector<int>> cap; // Capacidade
-vector<vector<bool>> adj; // Existe aresta?
+int N; //Qtd de vertices
+int M; //Qtd de arestas
+int S; //Origem
+int T_dest; //Destino
+vector<vector<int>> cap; //Capacidade
+vector<vector<bool>> adj; //Existe aresta?
 
 void cplex(){
     IloEnv env;
@@ -28,7 +28,7 @@ void cplex(){
         x.add(IloNumVarArray(env));
         for( j = 0; j < N; j++ ){
             if(adj[i][j]){
-                x[i].add(IloIntVar(env, 0, cap[i][j])); // Variaveis inteiras limitadas pela capacidade
+                x[i].add(IloIntVar(env, 0, cap[i][j])); //Variaveis inteiras limitadas pela capacidade
                 numberVar++;
             }else{
                 x[i].add(IloIntVar(env, 0, 0)); 
@@ -36,7 +36,7 @@ void cplex(){
         }
     }
     
-    // Variavel de fluxo total
+    //Variavel de fluxo total
     IloNumVar v(env, 0, INT_MAX, ILOINT);
     numberVar++;
 
@@ -44,17 +44,17 @@ void cplex(){
     IloExpr sum(env);
     IloExpr sum2(env);
 
-    // FUNCAO OBJETIVO
+    //FUNCAO OBJETIVO
     model.add(IloMaximize(env, v));
 
-    // RESTRICOES
-    // Conservacao de fluxo
+    //RESTRICOES
+    //Conservacao de fluxo
     for( i = 0; i < N; i++ ){
-        sum.clear(); // saindo de i
+        sum.clear(); //saindo de i
         for( j = 0; j < N; j++ ){
             if(adj[i][j]) sum += x[i][j];
         }
-        sum2.clear(); // chegando em i
+        sum2.clear(); //chegando em i
         for( j = 0; j < N; j++ ){
             if(adj[j][i]) sum2 += x[j][i];
         }
@@ -69,7 +69,7 @@ void cplex(){
         numberRes++;
     }
 
-    // EXECUCAO
+    //EXECUCAO
     time_t timer, timer2;
     IloNum value, objValue;
     double runTime;
@@ -104,7 +104,7 @@ void cplex(){
                 if(adj[i][j]){
                     value = IloRound(cplex.getValue(x[i][j]));
                     if(value > 0)
-                        printf("x[%d][%d]: %.0lf\n", i+1, j+1, value); // Print 1-indexed
+                        printf("x[%d][%d]: %.0lf\n", i+1, j+1, value); //Impressao com indice base 1
                 }
             }
         }
@@ -123,7 +123,7 @@ void cplex(){
 int main(){
     if(!(cin >> N >> M >> S >> T_dest)) return 0;
     
-    // Adjust for 0-indexed nodes
+    //Ajuste para indice base 0
     S--; T_dest--;
 
     cap.assign(N, vector<int>(N, 0));

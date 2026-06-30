@@ -10,13 +10,13 @@ ILOSTLBEGIN
 
 #define CPLEX_TIME_LIM 3600
 
-int O; // Qtde de origens
-int D; // Qtde de destinos
-int M; // Qtde de arestas
+int O; //Qtd de origens
+int D; //Qtd de destinos
+int M; //Qtd de arestas
 vector<int> oferta;
 vector<int> demanda;
-vector<vector<int>> c; // Custo
-vector<vector<bool>> adj; // Existe aresta?
+vector<vector<int>> c; //Custo
+vector<vector<bool>> adj; //Existe aresta?
 
 void cplex(){
     IloEnv env;
@@ -29,7 +29,7 @@ void cplex(){
         x.add(IloNumVarArray(env));
         for( j = 0; j < D; j++ ){
             if(adj[i][j]){
-                x[i].add(IloIntVar(env, 0, INT_MAX)); // Variaveis inteiras >= 0
+                x[i].add(IloIntVar(env, 0, INT_MAX)); //Variaveis inteiras >= 0
                 numberVar++;
             }else{
                 x[i].add(IloIntVar(env, 0, 0)); 
@@ -40,7 +40,7 @@ void cplex(){
     IloModel model ( env );
     IloExpr sum(env);
 
-    // FUNCAO OBJETIVO
+    //FUNCAO OBJETIVO
     sum.clear();
     for( i = 0; i < O; i++ ){
         for( j = 0; j < D; j++ ){
@@ -51,8 +51,8 @@ void cplex(){
     }
     model.add(IloMinimize(env, sum));
 
-    // RESTRICOES
-    // Oferta
+    //RESTRICOES
+    //Oferta
     for( i = 0; i < O; i++ ){
         sum.clear();
         for( j = 0; j < D; j++ ){
@@ -62,7 +62,7 @@ void cplex(){
         numberRes++;
     }
 
-    // Demanda
+    //Demanda
     for( j = 0; j < D; j++ ){
         sum.clear();
         for( i = 0; i < O; i++ ){
@@ -72,7 +72,7 @@ void cplex(){
         numberRes++;
     }
 
-    // EXECUCAO
+    //EXECUCAO
     time_t timer, timer2;
     IloNum value, objValue;
     double runTime;
@@ -107,7 +107,7 @@ void cplex(){
                 if(adj[i][j]){
                     value = IloRound(cplex.getValue(x[i][j]));
                     if(value > 0)
-                        printf("x[%d][%d]: %.0lf\n", i+1, j+1, value); // Print 1-indexed
+                        printf("x[%d][%d]: %.0lf\n", i+1, j+1, value); //Impressao com indice base 1
                 }
             }
         }
@@ -137,7 +137,7 @@ int main(){
     for(int i = 0; i < M; i++){
         int u_node, v_node, cost;
         cin >> u_node >> v_node >> cost;
-        // Adjust for 0-indexed vectors
+        //Ajuste para indice base 0
         u_node--; v_node--;
         adj[u_node][v_node] = true;
         c[u_node][v_node] = cost;
