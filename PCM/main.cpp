@@ -125,7 +125,7 @@ void cplex(){
 int main(){
     if(!(cin >> N >> M >> S >> T_dest)) return 0;
     
-    //Adjust for 0-indexed nodes
+    //Ajuste para indice base 0
     S--; T_dest--;
 
     c.assign(N, vector<int>(N, 0));
