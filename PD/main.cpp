@@ -10,10 +10,10 @@ ILOSTLBEGIN
 
 #define CPLEX_TIME_LIM 3600
 
-int N; //Qtd de agentes/tarefas
-int M; //Qtd de arestas (designacoes possiveis)
-vector<vector<int>> c; //Custo
-vector<vector<bool>> adj; //Existe aresta?
+int N; // Qtde de agentes/tarefas
+int M; // Qtde de arestas (designacoes possiveis)
+vector<vector<int>> c; // Custo
+vector<vector<bool>> adj; // Existe aresta?
 
 void cplex(){
     IloEnv env;
@@ -26,7 +26,7 @@ void cplex(){
         x.add(IloNumVarArray(env));
         for( j = 0; j < N; j++ ){
             if(adj[i][j]){
-                x[i].add(IloIntVar(env, 0, 1)); //Variaveis binarias
+                x[i].add(IloIntVar(env, 0, 1)); // Variaveis binarias
                 numberVar++;
             }else{
                 x[i].add(IloIntVar(env, 0, 0)); 
@@ -37,7 +37,7 @@ void cplex(){
     IloModel model ( env );
     IloExpr sum(env);
 
-    //FUNCAO OBJETIVO
+    // FUNCAO OBJETIVO
     sum.clear();
     for( i = 0; i < N; i++ ){
         for( j = 0; j < N; j++ ){
@@ -48,8 +48,8 @@ void cplex(){
     }
     model.add(IloMinimize(env, sum));
 
-    //RESTRICOES
-    //Cada agente é designado para exatamente 1 tarefa
+    // RESTRICOES
+    // Cada agente eh designado para exatamente 1 tarefa
     for( i = 0; i < N; i++ ){
         sum.clear();
         for( j = 0; j < N; j++ ){
@@ -59,7 +59,7 @@ void cplex(){
         numberRes++;
     }
 
-    //Cada tarefa é executada por exatamente 1 agente
+    // Cada tarefa eh executada por exatamente 1 agente
     for( j = 0; j < N; j++ ){
         sum.clear();
         for( i = 0; i < N; i++ ){
@@ -69,7 +69,7 @@ void cplex(){
         numberRes++;
     }
 
-    //EXECUCAO
+    // EXECUCAO
     time_t timer, timer2;
     IloNum value, objValue;
     double runTime;
@@ -104,7 +104,7 @@ void cplex(){
                 if(adj[i][j]){
                     value = IloRound(cplex.getValue(x[i][j]));
                     if(value > 0)
-                        printf("x[%d][%d]: %.0lf\n", i+1, j+1, value); //Impressao com indice base 1
+                        printf("x[%d][%d]: %.0lf\n", i, j, value); // Print 0-indexed
                 }
             }
         }
@@ -128,8 +128,8 @@ int main(){
     for(int i = 0; i < M; i++){
         int u_node, v_node, cost;
         cin >> u_node >> v_node >> cost;
-        //Ajuste para indice base 0
-        u_node--; v_node--;
+        // Adjust for 0-indexed vectors (Removed)
+        // u_node--; v_node--;
         adj[u_node][v_node] = true;
         c[u_node][v_node] = cost;
     }

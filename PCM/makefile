@@ -12,6 +12,9 @@ all: main.o
 main.o: main.cpp
 		g++ -O3 -c main.cpp $(INCLUDE) $(FLAGS) $(LPATH) $(LIBRARIES)
 
+run: all
+		./main
+
 clean:
-	rm *.exe
-	rm *.o
+	rm -f main *.exe
+	rm -f *.o

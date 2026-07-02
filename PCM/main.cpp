@@ -10,12 +10,12 @@ ILOSTLBEGIN
 
 #define CPLEX_TIME_LIM 3600
 
-int N; //Qtd de vertices
-int M; //Qtd de arestas
-int S; //Origem
-int T_dest; //Destino
-vector<vector<int>> c; //Custo
-vector<vector<bool>> adj; //Existe aresta?
+int N; // Qtde de vertices
+int M; // Qtde de arestas
+int S; // Origem
+int T_dest; // Destino
+vector<vector<int>> c; // Custo
+vector<vector<bool>> adj; // Existe aresta?
 
 void cplex(){
     IloEnv env;
@@ -28,7 +28,7 @@ void cplex(){
         x.add(IloNumVarArray(env));
         for( j = 0; j < N; j++ ){
             if(adj[i][j]){
-                x[i].add(IloIntVar(env, 0, 1)); //Variaveis binarias
+                x[i].add(IloIntVar(env, 0, 1)); // Variaveis binarias
                 numberVar++;
             }else{
                 x[i].add(IloIntVar(env, 0, 0)); 
@@ -40,7 +40,7 @@ void cplex(){
     IloExpr sum(env);
     IloExpr sum2(env);
 
-    //FUNCAO OBJETIVO
+    // FUNCAO OBJETIVO
     sum.clear();
     for( i = 0; i < N; i++ ){
         for( j = 0; j < N; j++ ){
@@ -51,14 +51,14 @@ void cplex(){
     }
     model.add(IloMinimize(env, sum));
 
-    //RESTRICOES
-    //Conservacao de fluxo
+    // RESTRICOES
+    // Conservacao de fluxo
     for( i = 0; i < N; i++ ){
-        sum.clear(); //saindo de i
+        sum.clear(); // saindo de i
         for( j = 0; j < N; j++ ){
             if(adj[i][j]) sum += x[i][j];
         }
-        sum2.clear(); //chegando em i
+        sum2.clear(); // chegando em i
         for( j = 0; j < N; j++ ){
             if(adj[j][i]) sum2 += x[j][i];
         }
@@ -71,7 +71,7 @@ void cplex(){
         numberRes++;
     }
 
-    //EXECUCAO
+    // EXECUCAO
     time_t timer, timer2;
     IloNum value, objValue;
     double runTime;
@@ -106,7 +106,7 @@ void cplex(){
                 if(adj[i][j]){
                     value = IloRound(cplex.getValue(x[i][j]));
                     if(value > 0)
-                        printf("x[%d][%d]: %.0lf\n", i+1, j+1, value); //Impressao com indice base 1
+                        printf("x[%d][%d]: %.0lf\n", i, j, value);
                 }
             }
         }
@@ -124,9 +124,6 @@ void cplex(){
 
 int main(){
     if(!(cin >> N >> M >> S >> T_dest)) return 0;
-    
-    //Ajuste para indice base 0
-    S--; T_dest--;
 
     c.assign(N, vector<int>(N, 0));
     adj.assign(N, vector<bool>(N, false));
@@ -134,7 +131,6 @@ int main(){
     for(int i = 0; i < M; i++){
         int u_node, v_node, cost;
         cin >> u_node >> v_node >> cost;
-        u_node--; v_node--;
         adj[u_node][v_node] = true;
         c[u_node][v_node] = cost;
     }
